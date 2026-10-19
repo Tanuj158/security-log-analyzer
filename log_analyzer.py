@@ -4,18 +4,21 @@
 failed_logins = {}
 failed_ips = {}
 
-
-with open("auth.log", "r") as file:
-	for line in file:
-		if line.startswith("Failed password for "):
-			username = line.split()[3]
-			failed_logins[username] = failed_logins.get(username, 0) + 1
-
-
-			ip_address = line.split()[5]
-			failed_ips[ip_address] = failed_ips.get(ip_address, 0) + 1
+try:
+	with open("auth.log", "r") as file:
+		for line in file:
+			if line.startswith("Failed password for "):
+				username = line.split()[3]
+				failed_logins[username] = failed_logins.get(username, 0) + 1
 
 
+				ip_address = line.split()[5]
+				failed_ips[ip_address] = failed_ips.get(ip_address, 0) + 1
+
+
+except FileNotFoundError:
+	print("ERROR: Authentication log file not found")
+	raise SystemExit(1)
 
 def detect_failed_logins(logins):
 	for user, count in logins.items():
